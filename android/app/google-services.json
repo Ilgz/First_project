@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "1009120009928",
+    "firebase_url": "https://bulletboard-f3b11-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "bulletboard-f3b11",
+    "storage_bucket": "bulletboard-f3b11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009120009928:android:948631ddbb16ad9ed0cffd",
+        "android_client_info": {
+          "package_name": "com.techno.prototypellf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009120009928-mrks6arhuto5uh1tg06ptukjl8cnsqb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techno.prototypellf",
+            "certificate_hash": "dd27d9be68c0a2901741a8973741f4bc531733cd"
+          }
+        },
+        {
+          "client_id": "1009120009928-r8jsv7ooh4dk1vllmjdccj84achp8ji6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techno.prototypellf",
+            "certificate_hash": "efa543593b1e03ead030319adc59f7b78567fe1d"
+          }
+        },
+        {
+          "client_id": "1009120009928-sn8a3377v6utilcvqsfsvg0bvp3usjrn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH5L_HziUd7u48ltwBvMLrGRbXTN1WBCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009120009928-sn8a3377v6utilcvqsfsvg0bvp3usjrn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009120009928:android:dd6182c4d2d3b11ed0cffd",
+        "android_client_info": {
+          "package_name": "com.techno.second_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009120009928-2vik9bko1nq56c1fj9ltt9iujdk3aue2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techno.second_project",
+            "certificate_hash": "efa543593b1e03ead030319adc59f7b78567fe1d"
+          }
+        },
+        {
+          "client_id": "1009120009928-sn8a3377v6utilcvqsfsvg0bvp3usjrn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH5L_HziUd7u48ltwBvMLrGRbXTN1WBCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009120009928-sn8a3377v6utilcvqsfsvg0bvp3usjrn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
