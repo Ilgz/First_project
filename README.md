@@ -1,6 +1,6 @@
-# second_project
+# First Project
 
-A new Flutter project.
+My Flutter project
 
 ## Getting Started
 
