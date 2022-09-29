@@ -8,7 +8,8 @@ class LoginInitial extends LoginState {
   @override
   List<Object> get props => [];
 }
-
+class GoogleCheckSuccess extends LoginState{}
+class GoogleCheckFail extends LoginState{}
 class RegisterSendSmsSuccess extends LoginState {
   final String verificationId;
   RegisterSendSmsSuccess(this.verificationId);

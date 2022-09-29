@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:second_project/main.dart';
 import 'package:second_project/main/bloc/main_bloc.dart';
 import 'package:second_project/profile/profile_bloc.dart';
@@ -70,6 +71,8 @@ class _SettingsState extends State<Settings> {
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.remove('apiKey');
                     await prefs.remove('profile');
+                    final googleSignIn=GoogleSignIn();
+                    googleSignIn.disconnect();
                     PersonalDataRepo.myProfile = Profile(
                         id: 0,
                         name: "",

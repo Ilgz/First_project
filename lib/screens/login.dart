@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:second_project/login/login_bloc.dart';
 import 'package:second_project/main.dart';
 import 'package:second_project/screens/forgot_password.dart';
@@ -41,6 +44,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -130,6 +134,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       if (state is LoginPhoneAvailabilitySuccess) {
         String phoneNumber = phoneNumberTrim(signUpPhoneNumberController.text);
         _bloc.add(RegisterSendSms(phoneNumber, 1));
+      }
+      if(state is GoogleCheckSuccess){
+        Navigator.pushAndRemoveUntil<dynamic>(
+          context,
+          MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => MyApp(),
+          ),
+              (route) => false, //if you want to disable back feature set to false
+        );
       }
       if (state is LoginCheckSuccess) {
         //BlocProvider.of<HomeBloc>(context)..deleteData();
@@ -306,6 +319,48 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
   Widget loginPage() {
     return Column(children: [
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: ElevatedButton.icon(
+
+          icon: CircleAvatar(
+            radius: 20.0,
+            child:SvgPicture.asset(
+              "assets/images/google_icon.svg",
+              height: 20,
+              width: 20,
+            )
+                ,
+            backgroundColor: Colors.transparent,
+          ),
+            style:ElevatedButton.styleFrom(shape:RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20), // <-- Radius
+    ),primary: Colors.white,onPrimary: Colors.black87,minimumSize:Size(double.infinity,50)),onPressed: (){
+            _bloc.add(GoogleCheck());
+        }, label: Text("Войти через Google")),
+      ),
+
+      Row(mainAxisSize:MainAxisSize.min,children: [
+        Expanded(
+          child: Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 20.0),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+            ),
+          ),
+        ),
+        Text("или",style: TextStyle(color: Colors.grey[700])),
+        Expanded(
+          child: Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 20.0),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+            ),
+          ),
+        ),
+      ],),
       Card(
         elevation: 3,
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

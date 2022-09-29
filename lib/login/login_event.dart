@@ -28,7 +28,9 @@ class CheckAvailability extends LoginEvent {
   @override
   List<Object?> get props => [];
 }
+class  GoogleCheck extends LoginEvent{
 
+}
 class CheckOtp extends LoginEvent {
   final String verificationID;
   final String otp;

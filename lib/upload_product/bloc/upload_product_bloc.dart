@@ -27,7 +27,7 @@ class UploadProductBloc extends Bloc<UploadProductEvent, UploadProductState> {
                   .readAsBytes()
                   .asStream(),
               File(event.uploadModel.pickedFileList[i]).lengthSync(),
-              filename: 'test $i'));
+              filename: 'test'+i.toString()+'.'+event.uploadModel.pickedFileList[i].split(".").last));
         } else {
           final response =
               await http.get(Uri.parse(event.uploadModel.pickedFileList[i]));
@@ -36,7 +36,7 @@ class UploadProductBloc extends Bloc<UploadProductEvent, UploadProductState> {
           file.writeAsBytesSync(response.bodyBytes);
           request.files.add(await http.MultipartFile(
               'pictures[]', file.readAsBytes().asStream(), file.lengthSync(),
-              filename: 'test $i'));
+              filename: 'test'+i.toString()+'.'+event.uploadModel.pickedFileList[i].split(".").last));
         }
       }
     }
@@ -66,7 +66,7 @@ class UploadProductBloc extends Bloc<UploadProductEvent, UploadProductState> {
             'pictures[]',
             File(event.uploadModel.pickedFileList[i]).readAsBytes().asStream(),
             File(event.uploadModel.pickedFileList[i]).lengthSync(),
-            filename: 'test $i'));
+            filename: 'test'+i.toString()+'.'+event.uploadModel.pickedFileList[i].split(".").last));
       }
     }
     request.fields["product"] = event.uploadModel.productName;

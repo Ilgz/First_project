@@ -35,37 +35,40 @@ Widget buildProfile(dynamic user, context, bool isClickable) {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 16),
-              Padding(
-                padding: exceptBottom(16),
-                child: Text(
-                  user.name,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Container(
+            width: MediaQuery.of(context).size.width-100,
+            padding: exceptBottom(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 16),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    user.name,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: exceptBottom(16),
-                child: Text(
+                Text(
                   idData,
+                  overflow: TextOverflow.fade,
                   style: TextStyle(fontSize: 16),
                 ),
-              ),
-              SizedBox(
-                height: 32,
-              )
-              // Padding(
-              //   padding: EdgeInsets.all(16),
-              //   child: Text(
-              //     "Местоположение: г.Бишкек",
-              //     style: TextStyle(fontSize: 16),
-              //   ),
-              // )
-            ],
+                SizedBox(
+                  height: 32,
+                )
+                // Padding(
+                //   padding: EdgeInsets.all(16),
+                //   child: Text(
+                //     "Местоположение: г.Бишкек",
+                //     style: TextStyle(fontSize: 16),
+                //   ),
+                // )
+              ],
+            ),
           ),
           Spacer(),
+
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: CircleAvatar(

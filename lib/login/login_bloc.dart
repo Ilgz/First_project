@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<CheckAvailability>(_checkAvailability);
     on<LoginStarted>(_nothing);
     on<CheckOtp>(_checkOtp);
+    on<GoogleCheck>(_googleCheck);
+  }
+  Future<void> _googleCheck(GoogleCheck event,Emitter<LoginState> emit) async{
+    final googleSignIn=GoogleSignIn();
+    GoogleSignInAccount? _user;
+    final googleUser=await googleSignIn.signIn();
+    if(googleUser==null){
+      emit(GoogleCheckFail());
+      return ;
+    }
+    _user=googleUser;
+    final googleAuth=await googleUser.authentication;
+    print(googleAuth.accessToken);
+    final response = await http.post(Uri.parse(
+        '${myServer}api/auth/google?token=${googleAuth.accessToken}'));
+    final result = loginAccessFromJson(response.body);
+    if (result.accessToken != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('apiKey', result.accessToken);
+    }
+    emit(GoogleCheckSuccess());
   }
   Future<void> _checkOtp(CheckOtp event, Emitter<LoginState> emit) async {
     FirebaseAuth auth = FirebaseAuth.instance;
