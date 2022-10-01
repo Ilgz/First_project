@@ -23,10 +23,9 @@ class LoginStartedTwo extends LoginEvent {
 }
 
 class CheckAvailability extends LoginEvent {
+  final int screen;
   final String phoneNumber;
-  CheckAvailability(this.phoneNumber);
-  @override
-  List<Object?> get props => [];
+  CheckAvailability(this.phoneNumber,{this.screen=1});
 }
 class  GoogleCheck extends LoginEvent{
 

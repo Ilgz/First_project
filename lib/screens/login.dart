@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:second_project/login/login_bloc.dart';
 import 'package:second_project/main.dart';
 import 'package:second_project/screens/forgot_password.dart';
@@ -23,10 +21,6 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> with TickerProviderStateMixin {
   int signUpErrorColor = Colors.white.value;
   int loginErrorColor = Colors.white.value;
-  bool loginSubmitEnabled = true;
-  bool loginLoading = false;
-  bool signUpSubmitEnabled = true;
-  bool signUpLoading = false;
   var signUpPhoneNumberController = TextEditingController();
   var signUpPasswordController = TextEditingController();
   var loginPhoneNumberController = TextEditingController();
@@ -129,7 +123,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   title: "Номер уже зарегистрирован",
                   description: "Используйте другой номер.",
                 ));
-        setState(() => signUpLoading = false);
       }
       if (state is LoginPhoneAvailabilitySuccess) {
         String phoneNumber = phoneNumberTrim(signUpPhoneNumberController.text);
@@ -178,7 +171,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   title: "Неверный пароль",
                   description: "Попробуйте еще раз.",
                 ));
-        setState(() => loginLoading = false);
       }
       if (state is LoginAccessSuccess) {
         Navigator.pushAndRemoveUntil<dynamic>(
@@ -213,11 +205,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           if (text.length == 1 || text.length == 0) {
             setState(() {});
           }
-          if (!signUpSubmitEnabled) {
-            setState(() {
-              signUpSubmitEnabled = true;
-            });
-          }
+          
         },
         color: signUpNameController.text.isEmpty
             ? signUpErrorColor
@@ -239,11 +227,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           child: TextField(
             controller: signUpPhoneNumberController,
             onChanged: (text) {
-              if (!signUpSubmitEnabled) {
-                setState(() {
-                  signUpSubmitEnabled = true;
-                });
-              }
               if (text.length == 13 || text.length == 0) {
                 setState(() {});
               }
@@ -280,30 +263,25 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           if (text.length == 1 || text.length == 0) {
             setState(() {});
           }
-          if (!signUpSubmitEnabled) {
-            setState(() {
-              signUpSubmitEnabled = true;
-            });
-          }
+         
         },
         color: signUpPasswordController.text.isEmpty
             ? signUpErrorColor
             : Colors.white.value,
       ),
-      BlackMaterialButton(
+      BlocBuilder<LoginBloc, LoginState>(
+  builder: (context, state) {
+    return BlackMaterialButton(
         buttonName: "Зарегистрироваться",
         onClick: () {
-          if (signUpSubmitEnabled) {
+          if (state is !SignUpLoadingState) {
             if (signUpNameController.text.isNotEmpty &&
                 signUpPhoneNumberController.text.length == 13 &&
                 signUpPasswordController.text.isNotEmpty) {
               String phoneNumber =
                   phoneNumberTrim(signUpPhoneNumberController.text);
+              print(phoneNumber+"ffff");
               _bloc.add(CheckAvailability(phoneNumber));
-              setState(() {
-                signUpLoading = true;
-                signUpSubmitEnabled = false;
-              });
             } else {
               setState(() {
                 signUpErrorColor = ErrorColor;
@@ -311,9 +289,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             }
           }
         },
-        enabled: signUpSubmitEnabled,
-        loading: signUpLoading,
-      )
+      enabled: state is SignUpLoadingState?false:true,
+      loading: state is SignUpLoadingState?true:false,
+      );
+  },
+)
     ]);
   }
 
@@ -376,11 +356,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           child: TextField(
             controller: loginPhoneNumberController,
             onChanged: (text) {
-              if (!loginSubmitEnabled) {
-                setState(() {
-                  loginSubmitEnabled = true;
-                });
-              }
               if (text.length == 13 || text.length == 0) {
                 setState(() {});
               }
@@ -416,29 +391,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           if (text.length == 1 || text.length == 0) {
             setState(() {});
           }
-          if (!loginSubmitEnabled) {
-            setState(() {
-              loginSubmitEnabled = true;
-            });
-          }
         },
         color: loginPasswordController.text.isEmpty
             ? loginErrorColor
             : Colors.white.value,
       ),
-      BlackMaterialButton(
+      BlocBuilder<LoginBloc, LoginState>(
+  builder: (context, state) {
+    return BlackMaterialButton(
         buttonName: "Войти",
         onClick: () {
-          if (loginSubmitEnabled) {
+          if (state is !LoginLoadingState) {
             if (loginPasswordController.text.isNotEmpty &&
                 loginPhoneNumberController.text.length == 13) {
               String phoneNumber =
                   phoneNumberTrim(loginPhoneNumberController.text);
               _bloc.add(LoginCheck(phoneNumber, loginPasswordController.text));
-              setState(() {
-                loginLoading = true;
-                loginSubmitEnabled = false;
-              });
             } else {
               setState(() {
                 loginErrorColor = ErrorColor;
@@ -446,9 +414,11 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             }
           }
         },
-        enabled: loginSubmitEnabled,
-        loading: loginLoading,
-      ),
+        enabled: state is LoginLoadingState?false:true,
+        loading: state is LoginLoadingState?true:false,
+      );
+  },
+),
       //SizedBox(height: 10),
       GestureDetector(
         behavior: HitTestBehavior.translucent,

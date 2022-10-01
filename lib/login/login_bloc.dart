@@ -21,14 +21,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<GoogleCheck>(_googleCheck);
   }
   Future<void> _googleCheck(GoogleCheck event,Emitter<LoginState> emit) async{
+    emit(LoginLoadingState());
     final googleSignIn=GoogleSignIn();
-    GoogleSignInAccount? _user;
     final googleUser=await googleSignIn.signIn();
     if(googleUser==null){
       emit(GoogleCheckFail());
       return ;
     }
-    _user=googleUser;
     final googleAuth=await googleUser.authentication;
     print(googleAuth.accessToken);
     final response = await http.post(Uri.parse(
@@ -71,6 +70,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Future<void> _sendSms(RegisterSendSms event, Emitter<LoginState> emit) async {
+    if(event.occasion==1){
+      emit(SignUpLoadingState());
+    }else{
+      emit(ForgotPasswordPhoneExistsLoadingState());
+    }
     FirebaseAuth _auth = FirebaseAuth.instance;
     late String verificationID;
     Completer<LoginState> c = Completer<LoginState>();
@@ -86,7 +90,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             c.complete(ResetSendSmsSuccess(verificationId));
           }
         },
-        // codeAutoRetrievalTimeout:  (String verificationId) {}).whenComplete(() =>  emit(RegisterSendSmsSuccess(verificationID)));
         codeAutoRetrievalTimeout: (String verificationId) async {});
 
     var stateToReturn = await c.future;
@@ -94,6 +97,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Future<void> _login(LoginCheck event, Emitter<LoginState> emit) async {
+    emit(LoginLoadingState());
     final response = await http.post(Uri.parse(
         '${myServer}api/auth/login?phone_number=${event.phoneNumber}&password=${event.password}'));
     try {
@@ -108,13 +112,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _checkAvailability(
       CheckAvailability event, Emitter<LoginState> emit) async {
-    final response = await http.post(Uri.parse(
-        '${myServer}api/auth/available?phone_number=${event.phoneNumber}'));
-    if (response.body == "User exists") {
-      emit(LoginPhoneAvailabilityFail());
-    } else {
-      emit(LoginPhoneAvailabilitySuccess());
+    if(event.screen==1){
+      emit(SignUpLoadingState());
+      final response = await http.post(Uri.parse(
+          '${myServer}api/auth/available?phone_number=${event.phoneNumber}'));
+      if (response.body == "User exists") {
+        emit(LoginPhoneAvailabilityFail());
+      } else {
+        emit(LoginPhoneAvailabilitySuccess());
+      }
+    }else{
+
+      emit(ForgotPasswordPhoneExistsLoadingState());
+      final response = await http.post(Uri.parse(
+          '${myServer}api/auth/available?phone_number=${event.phoneNumber}'));
+      if (response.body == "User exists") {
+        emit(ForgotPasswordPhoneExistsSuccessState());
+      } else {
+        emit(ForgotPasswordPhoneExistsFailState());
+      }
     }
+
   }
 
   Future<void> _nothing(LoginStarted event, Emitter<LoginState> emit) async {

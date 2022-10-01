@@ -4,74 +4,54 @@ abstract class LoginState {
   const LoginState();
 }
 
-class LoginInitial extends LoginState {
-  @override
-  List<Object> get props => [];
-}
-class GoogleCheckSuccess extends LoginState{}
-class GoogleCheckFail extends LoginState{}
+class LoginInitial extends LoginState {}
+
+class GoogleCheckSuccess extends LoginState {}
+
+class GoogleCheckFail extends LoginState {}
+
+class LoginLoadingState extends LoginState {}
+
+class SignUpLoadingState extends LoginState {}
+
 class RegisterSendSmsSuccess extends LoginState {
   final String verificationId;
+
   RegisterSendSmsSuccess(this.verificationId);
-  @override
-  List<Object?> get props => [];
 }
 
-class RegisterCheckOtpSuccess extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class RegisterCheckOtpSuccess extends LoginState {}
 
-class RegisterCheckOtpFail extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class RegisterCheckOtpFail extends LoginState {}
 
-class ResetCheckOtpSuccess extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class ResetCheckOtpSuccess extends LoginState {}
 
-class ResetCheckOtpFail extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class ResetCheckOtpFail extends LoginState {}
 
 class ResetSendSmsSuccess extends LoginState {
   final String verificationId;
+
   ResetSendSmsSuccess(this.verificationId);
-  @override
-  List<Object?> get props => [];
 }
 
 class LoginCheckSuccess extends LoginState {
   final String accessToken;
+
   LoginCheckSuccess(this.accessToken);
-  @override
-  List<Object?> get props => [];
 }
 
-class LoginCheckFail extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class LoginCheckFail extends LoginState {}
 
-class LoginAccessSuccess extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class LoginAccessSuccess extends LoginState {}
 
-class LoginAccessFail extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class LoginAccessFail extends LoginState {}
 
-class LoginPhoneAvailabilitySuccess extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class LoginPhoneAvailabilitySuccess extends LoginState {}
 
-class LoginPhoneAvailabilityFail extends LoginState {
-  @override
-  List<Object?> get props => [];
-}
+class LoginPhoneAvailabilityFail extends LoginState {}
+
+class ForgotPasswordPhoneExistsSuccessState extends LoginState {}
+
+class ForgotPasswordPhoneExistsFailState extends LoginState {}
+
+class ForgotPasswordPhoneExistsLoadingState extends LoginState {}

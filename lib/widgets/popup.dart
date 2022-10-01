@@ -31,7 +31,7 @@ class PopupWidget extends StatelessWidget {
               ),
             ),
             SizedBox(height: 15),
-            Text(description),
+            Text(description,textAlign: TextAlign.center,),
             SizedBox(height: 20),
             Divider(
               height: 1,

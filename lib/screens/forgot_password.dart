@@ -6,6 +6,8 @@ import 'package:second_project/login/login_bloc.dart';
 import 'package:second_project/screens/otp.dart';
 import 'package:second_project/widgets/black_material_button.dart';
 
+import '../widgets/popup.dart';
+
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
 
@@ -15,8 +17,6 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   int defaultErrorColor = Colors.white.value;
-  bool submitEnabled = true;
-  bool isLoading = false;
   var previousLength = 1;
   final myController = TextEditingController();
   late LoginBloc _bloc;
@@ -30,11 +30,20 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
+        if(state is ForgotPasswordPhoneExistsSuccessState){
+          String phoneNumber = phoneNumberTrim(myController.text);
+          _bloc.add(RegisterSendSms(phoneNumber, 2));
+        }
+        if(state is ForgotPasswordPhoneExistsFailState){
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) => const PopupWidget(
+                title: "Номер не был найден",
+                description: "Используйте другой номер или зарегистрируйтесь.",
+              ));
+        }
         if (state is ResetSendSmsSuccess) {
-          setState(() {
-            isLoading = false;
-            submitEnabled = true;
-          });
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -72,15 +81,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 ),
                 borderRadius: BorderRadius.circular(20)),
             child: Padding(
+
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: TextField(
                 controller: myController,
                 onChanged: (text) {
-                  if (!submitEnabled) {
-                    setState(() {
-                      submitEnabled = true;
-                    });
-                  }
                   setErrorColor();
                   phoneNumberFormat(previousLength, text, myController);
                   previousLength = myController.text.length;
@@ -104,18 +109,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
             ),
           ),
-          BlackMaterialButton(
+          BlocBuilder<LoginBloc, LoginState>(
+  builder: (context, state) {
+    return BlackMaterialButton(
               buttonName: "Отправить",
               onClick: () {
-                if (submitEnabled) {
+                if (state is !ForgotPasswordPhoneExistsLoadingState) {
                   if (myController.text.length == 13) {
                     String phoneNumber = phoneNumberTrim(myController.text);
-                    _bloc.add(RegisterSendSms(phoneNumber, 2));
+                    print(phoneNumber+"aaaa");
 
-                    setState(() {
-                      isLoading = true;
-                      submitEnabled = false;
-                    });
+                    _bloc.add(CheckAvailability(phoneNumber,screen: 2));
                   } else {
                     setState(() {
                       defaultErrorColor = ErrorColor;
@@ -123,8 +127,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   }
                 }
               },
-              enabled: submitEnabled,
-              loading: isLoading)
+      enabled: state is ForgotPasswordPhoneExistsLoadingState?false:true,
+      loading: state is ForgotPasswordPhoneExistsLoadingState?true:false,
+    );
+  },
+)
         ],
       ),
     ));
