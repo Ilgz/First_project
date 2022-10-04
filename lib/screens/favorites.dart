@@ -34,6 +34,7 @@ class _FavoritesState extends State<Favorites> {
         },
         builder: (context, state) {
           if (state is LoadFavoritesSuccess) {
+            print("succuss");
             return SingleChildScrollView(
               child: Column(
                 children: [

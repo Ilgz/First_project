@@ -82,6 +82,7 @@ Widget buildProfile(dynamic user, context, bool isClickable) {
                   : null,
               backgroundImage: user.picture != null
                   ? Image(
+                height: 20,width: 20,
                           image: CachedNetworkImageProvider(
                               user.picture.toString()))
                       .image

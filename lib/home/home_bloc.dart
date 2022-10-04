@@ -32,8 +32,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
         final response = await http.get(Uri.parse(parameters));
         final result = itemProductFromJson(response.body);
+        print(response.body);
         //final result =itemProductFromJson(jsonDecode(response.body.replaceAll(r"\'", "'")));
         _lastPage = result.meta.lastPage;
+        if(result.data.isEmpty){
+          emit(HomeFail());
+          return ;
+        }
         emit(HomeSuccess(List.from(items)..addAll(result.data)));
         items.addAll(result.data);
       }

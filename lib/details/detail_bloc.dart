@@ -13,9 +13,22 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
   DetailBloc() : super(DetailInitial()) {
     on<LoadRelated>(_loadProducts);
     on<ChangeStateStatus>(_changeStateStatus);
+    on<DeleteProductEvent>(_deleteProduct);
+  }
+  Future<void> _deleteProduct(DeleteProductEvent event,Emitter<DetailState> emit) async {
+    emit(DeleteProductLoadingState());
+    final String parameters = "${myServer}api/auc/${event.id}";
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${PersonalDataRepo.apiKey}',
+    };
+    final response =
+    await http.delete(Uri.parse(parameters), headers: requestHeaders);
+    emit(DeleteProductSuccessState());
   }
   Future<void> _changeStateStatus(
       ChangeStateStatus event, Emitter<DetailState> emit) async {
+    emit(ChangeStateStatusLoading());
     final String parameters = "${myServer}api/auc/${event.id}";
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',

@@ -1,13 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
-import 'package:second_project/model/user_product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper.dart';
 import '../model/item_product.dart';
 
 part 'favorite_event.dart';
+
 part 'favorite_state.dart';
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
@@ -16,6 +15,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     on<DeleteFavorite>(_deleteFavorite);
     on<LoadFavorites>(_loadFavorite);
   }
+
   Future<void> _loadFavorite(
       LoadFavorites event, Emitter<FavoriteState> emit) async {
     try {
@@ -29,10 +29,16 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       final response =
           await http.get(Uri.parse(request), headers: requestHeaders);
       var result = itemProductFromJson(response.body);
+      print(response.body);
       PersonalDataRepo.favoritedIds.clear();
       for (int i = 0; i < result.data.length; i++) {
         PersonalDataRepo.favoritedIds.add(result.data[i].id);
       }
+      if (result.data.isEmpty) {
+        emit(LoadFavoritesFail());
+        return;
+      }
+
       emit(LoadFavoritesSuccess(List.from(result.data)));
     } catch (e) {
       emit(LoadFavoritesFail());

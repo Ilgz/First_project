@@ -47,6 +47,7 @@ class _ChatState extends State<Chat> {
         }
 
         if (state is LoadChatSuccess) {
+          print("LoadedChat");
           state.chatList!.sort((b, a) {
             var adate = a.last.created_at; //before -> var adate = a.expiry;
             var bdate = b.last.created_at; //before -> var bdate = b.expiry;
@@ -57,7 +58,10 @@ class _ChatState extends State<Chat> {
         }
       },
       builder: (context, state) {
-        if (state is LoadChatFail) {}
+        if (state is LoadChatFail) {
+          print("FailChat");
+
+        }
         if (state is LoadChatSuccess) {
           if (state.chatList!.isEmpty) {
             return Stack(

@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:second_project/favorite/favorite_bloc.dart';
+import 'package:second_project/helper.dart';
 import 'package:second_project/model/upload_model.dart';
 import 'package:second_project/screens/login.dart';
 import 'package:second_project/screens/upload_product.dart';
 import 'package:second_project/widgets/black_material_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:second_project/helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../chat/bloc/chat_bloc.dart';
@@ -23,6 +23,7 @@ class Detail extends StatefulWidget {
   final User user;
   final bool isGuest;
   final bool isActive;
+
   const Detail(
       {Key? key,
       required this.user,
@@ -37,10 +38,9 @@ class Detail extends StatefulWidget {
 
 class _DetailState extends State<Detail> {
   List<Datum> items = [];
-  bool isEnabled = true;
-  bool isLoading = false;
   var messageController = new TextEditingController();
   late IconData favIcon = Icons.favorite_border_outlined;
+
   @override
   void initState() {
     bool initialValue = false;
@@ -62,6 +62,7 @@ class _DetailState extends State<Detail> {
   }
 
   int activeIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,19 +70,44 @@ class _DetailState extends State<Detail> {
             ? Material(
                 elevation: 20,
                 child: Container(
-                  child: BlackMaterialButton(
-                    buttonName:
-                        widget.isActive ? "Деактивировать" : "Активировать",
-                    onClick: () {
-                      BlocProvider.of<DetailBloc>(context)
-                        ..add(ChangeStateStatus(widget.uploadModel.id));
-                      setState(() {
-                        isEnabled = false;
-                        isLoading = true;
-                      });
+                  child: BlocBuilder<DetailBloc, DetailState>(
+                    builder: (context, state) {
+                      return Row(
+                        children: [
+                          if(!widget.isActive)...[
+                            Expanded(
+                              child: BlackMaterialButton(
+                                buttonName:
+                               "Удалить",
+                                onClick: () {
+                                  BlocProvider.of<DetailBloc>(context)
+                                    ..add(DeleteProductEvent(widget.uploadModel.id));
+                                },
+                                enabled:
+                                state is DeleteProductLoadingState ? false : true,
+                                loading:
+                                state is DeleteProductLoadingState ? true : false,
+                              ),
+                            ),
+                          ]
+                     ,
+                          Expanded(
+                            child: BlackMaterialButton(
+                              buttonName:
+                                  widget.isActive ? "Деактивировать" : "Активировать",
+                              onClick: () {
+                                BlocProvider.of<DetailBloc>(context)
+                                  ..add(ChangeStateStatus(widget.uploadModel.id));
+                              },
+                              enabled:
+                                  state is ChangeStateStatusLoading ? false : true,
+                              loading:
+                                  state is ChangeStateStatusLoading ? true : false,
+                            ),
+                          ),
+                        ],
+                      );
                     },
-                    enabled: isEnabled,
-                    loading: isLoading,
                   ),
                 ),
               )
@@ -120,12 +146,30 @@ class _DetailState extends State<Detail> {
                   ..add(LoadActiveProducts(PersonalDataRepo.myProfile.id, 2))
                   ..add(LoadInactiveProducts(PersonalDataRepo.myProfile.id, 2));
                 Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(widget.isActive?"Объявление успешно деактивировано":'Объявление успешно активировано'),
+                      Spacer(),
+                      Icon(Icons.check_outlined, color: Colors.white),
+                    ],
+                  ),
+                  backgroundColor: Colors.green[500],
+                  behavior: SnackBarBehavior.floating,
+                ));
+              }
+              if (state is DeleteProductSuccessState) {
+                BlocProvider.of<ProfileBloc>(context)
+                  ..add(LoadActiveProducts(PersonalDataRepo.myProfile.id, 2))
+                  ..add(LoadInactiveProducts(PersonalDataRepo.myProfile.id, 2));
+                Navigator.pop(context);
 
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Объявление успешно деактивировано'),
+                      Text('Объявление успешно удалено'),
                       Spacer(),
                       Icon(Icons.check_outlined, color: Colors.white),
                     ],
@@ -339,12 +383,10 @@ class _DetailState extends State<Detail> {
               child: DescriptionTextWidget(
                   text: widget.uploadModel.productDescription.trim()),
             ),
-            Visibility(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-                child: buildProfile(
-                    widget.user, context, widget.isGuest ? true : false),
-              ),
+            Padding(
+              padding: exceptBottom(8),
+              child: buildProfile(
+                  widget.user, context, widget.isGuest ? true : false),
             ),
             Column(
               children: [

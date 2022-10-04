@@ -9,7 +9,10 @@ class DetailStarted extends DetailEvent {
   // TODO: implement props
   List<Object?> get props => [];
 }
-
+class DeleteProductEvent extends DetailEvent {
+  int id;
+  DeleteProductEvent(this.id);
+}
 class ChangeStateStatus extends DetailEvent {
   int id;
   ChangeStateStatus(this.id);

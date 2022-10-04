@@ -13,5 +13,7 @@ class LoadRelatedSuccess extends DetailState {
   final List<Datum> items;
   LoadRelatedSuccess(this.items);
 }
-
+class DeleteProductLoadingState extends DetailState{}
+class DeleteProductSuccessState extends DetailState{}
 class ChangeStateStatusSuccess extends DetailState {}
+class ChangeStateStatusLoading extends DetailState {}
